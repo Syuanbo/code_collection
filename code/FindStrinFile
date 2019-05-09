@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+import os
+import chardet
+ftype =['.txt', '.html', '.php'] #要查找包含字符的文件后缀
+
+def findstr(dirname, fstr):
+    for filenames in os.listdir(dirname):
+        filenames = os.path.join(dirname, filenames)
+        if os.path.splitext(filenames)[1] in ftype: #找到要处理后缀的文件
+            with open(filenames, 'rb') as f: #判断文件编码方式
+                buf = f.read()
+                result = chardet.detect(buf)
+            try:
+                with open(filenames, 'r', encoding=result["encoding"]) as f:#查找字符串
+                    str1 = f.read()
+                    if fstr in str1:
+                        print('找到要查找的文件',filenames)
+                        input('找到要查找的文件了还要继续吗？')
+                    #else:
+                    #    print(filenames)
+            except:
+                print('文件打开出错，可能是编码问题',result["encoding"],filenames)
+        elif os.path.isdir(filenames): #目录文件继续递归
+            #print(filenames)
+            findstr(filenames, fstr)
+
+if __name__ == '__main__':
+    dirname = input('输入文件名：')
+    fstr = str(input('输入要查找的字符串：'))
+    findstr(dirname, fstr)
+    print('全部文件查找完毕')
+'''
+--------------------- 
+作者：hello怡红公子 
+来源：CSDN 
+原文：https://blog.csdn.net/hello_world2008/article/details/77478364 
+'''
